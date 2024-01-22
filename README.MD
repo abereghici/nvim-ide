@@ -16,16 +16,14 @@ xhost +Local:*
 xhost
 ```
 
-## Images
-
-Build command
+## Installation
 
 ```shell
-docker build -t nvim-ide .
+sudo ./setup
 ```
 
 Run command 
 
 ```shell
-docker run --rm -it --net=host -e DISPLAY=$DISPLAY -v ${PWD}/:/root/workspace nvim-ide /bin/bash
+dvim /project/path
 ```
