@@ -1,0 +1,53 @@
+#!/bin/bash
+
+image_name="nvim-ide"
+main_container_name="nvim-ide-main"
+resource_dir="$HOME/.local/share/nvim-ide"
+neovim_config_dir="$resource_dir/dot/config/nvim"
+
+real=""
+path=""
+nvim_path=""
+
+if [ ! -z "$1" ]; then
+	real="$(realpath $1)"
+else
+	real="$(realpath .)"
+fi
+
+if [ -d "$real" ]; then
+	if [ -z "$1" ]; then
+		nvim_path=""
+	else
+		nvim_path=" ."
+	fi
+	path="$real"
+else
+	nvim_path=" $(basename $real)"
+	path="$(dirname $real)"
+fi
+
+if [ -z "$(docker images -q $image_name)" ]; then
+	echo "Image does not exist. Building now..."
+	CMD="docker build -t $image_name $resource_dir"
+	$CMD
+fi
+
+if [ ! "$(docker ps -aq -f name=$main_container_name)" ]; then
+	echo "Container does not exist. Creating now..."
+	CMD="docker run -d \
+        --name $main_container_name \
+        -v $neovim_config_dir:/root/.config/nvim \
+        -v nvim_state:/root/.local/state/nvim \
+        -v nvim_share:/root/.local/share/nvim \
+        $image_name"
+	$CMD
+fi
+
+CMD="docker run --rm -it \
+    --net=host -e DISPLAY=$DISPLAY \
+    --volumes-from $main_container_name \
+    -v $path:/mnt/volume \
+    --workdir /mnt/volume \
+    $image_name nvim$nvim_path"
+$CMD

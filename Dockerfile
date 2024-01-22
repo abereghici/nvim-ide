@@ -16,7 +16,7 @@ ARG LG_GITHUB='https://github.com/jesseduffield/lazygit/releases/download/v0.40.
 ARG LG_ARCHIVE='lazygit.tar.gz'
 
 # Update repositories and install software for building Neovim from source.
-RUN apt-get update && apt-get -y install git wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata
+RUN apt-get update && apt-get -y install git wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip
 
 # Configure locale
 RUN apt-get install -y locales && \
@@ -37,12 +37,14 @@ RUN cd /root/tmp && curl -fsSL https://deb.nodesource.com/setup_current.x | bash
 RUN cd /root/tmp && git clone --depth 1 --branch stable https://github.com/neovim/neovim
 RUN cd /root/tmp/neovim && make CMAKE_BUILD_TYPE=Release && make install
 
+# Cooperate Neovim with Python 3.
+RUN pip3 install pynvim --break-system-packages
+
+# Cooperate NodeJS with Neovim.
+RUN npm i -g neovim
+
 # Create directory for Neovim configuration files.
 RUN mkdir -p /root/.config/nvim
-
-# Copy Neovim configuration files.
-RUN cd /root/tmp && git clone --depth 1 https://github.com/abereghici/dot
-RUN mv /root/tmp/dot/config/nvim/ /root/.config/
 
 # Install Lazygit from binary
 RUN cd /root/tmp && curl -L -o $LG_ARCHIVE $LG_GITHUB
