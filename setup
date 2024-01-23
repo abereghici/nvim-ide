@@ -10,7 +10,7 @@ rm -rf $resource_dir
 cp -r $script_dir $resource_dir
 
 # Add dvim command to the bin folder
-cp -r $script_dir/dvim $HOME/.local/bin
+cp -r $script_dir/dvim $HOME/.local/bin/
 
 # Download the neovim configs
 git clone --depth 1 https://github.com/abereghici/dot $resource_dir/dot
