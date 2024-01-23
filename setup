@@ -2,6 +2,7 @@
 
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 resource_dir="$HOME/.local/share/nvim-ide"
+bin_dir="$HOME/.local/bin"
 
 # Cleanup the resource folder
 rm -rf $resource_dir
@@ -9,8 +10,11 @@ rm -rf $resource_dir
 # Copy local resources
 cp -r $script_dir $resource_dir
 
+# Create bin dir if not exists
+[ -d $bin_dir ] || mkdir $bin_dir
+
 # Add dvim command to the bin folder
-cp -r $script_dir/dvim $HOME/.local/bin/
+cp -r $script_dir/dvim $bin_dir
 
 # Download the neovim configs
 git clone --depth 1 https://github.com/abereghici/dot $resource_dir/dot
