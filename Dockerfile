@@ -3,9 +3,6 @@
 # Debian image as base
 FROM debian:latest
 
-# Expose some ports to host by default.
-EXPOSE 8080 8081 8082 8083 8084 8085
-
 # Set image locale.
 ENV LANG=en_US.UTF-8
 ENV TZ=Europe/Bucharest
@@ -15,8 +12,8 @@ ARG LG='lazygit'
 ARG LG_GITHUB='https://github.com/jesseduffield/lazygit/releases/download/v0.40.2/lazygit_0.40.2_Linux_x86_64.tar.gz'
 ARG LG_ARCHIVE='lazygit.tar.gz'
 
-# Update repositories and install software for building Neovim from source.
-RUN apt-get update && apt-get -y install git git-lfs wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip procps
+# Update repositories and install system tools
+RUN apt-get update && apt-get -y install git git-lfs wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip procps fontconfig
 
 # Configure locale
 RUN apt-get install -y locales && \
@@ -24,7 +21,7 @@ RUN apt-get install -y locales && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=$LANG
     
-# Install tools
+# Install dev tools
 RUN apt-get -y install fd-find fzf ripgrep tree xclip
 
 # Create tmp directory
@@ -43,8 +40,9 @@ RUN pip3 install pynvim --break-system-packages
 # Cooperate NodeJS with Neovim.
 RUN npm i -g neovim
 
-# Create directory for Neovim configuration files.
-RUN mkdir -p /root/.config/nvim
+# Install nerd font
+RUN wget -P /root/.local/share/fonts https://github.com/ryanoasis/nerd-fonts/releases/latest/download/0xProto.zip \
+    && cd /root/.local/share/fonts && unzip 0xProto.zip && rm 0xProto.zip && fc-cache -fv
 
 # Install Lazygit from binary
 RUN cd /root/tmp && curl -L -o $LG_ARCHIVE $LG_GITHUB

@@ -3,7 +3,7 @@
 image_name="nvim-ide"
 main_container_name="nvim-ide-main"
 resource_dir="$HOME/.local/share/nvim-ide"
-neovim_config_dir="$resource_dir/dot/config/nvim"
+neovim_config_dir="$HOME/.config/nvim"
 
 real=""
 path=""
@@ -40,6 +40,7 @@ if [ ! "$(docker ps -aq -f name=$main_container_name)" ]; then
         -v $neovim_config_dir:/root/.config/nvim \
         -v nvim_state:/root/.local/state/nvim \
         -v nvim_share:/root/.local/share/nvim \
+        -v $HOME/.ssh:/root/.ssh \
         $image_name"
 	$CMD
 fi
@@ -48,7 +49,6 @@ CMD="docker run --rm -it \
     --net=host -e DISPLAY=$DISPLAY \
     --volumes-from $main_container_name \
     -v $path:/root/workspace \
-    -v $HOME/.ssh:/root/.ssh \
     --workdir /root/workspace \
     $image_name nvim$nvim_path"
 $CMD
