@@ -16,7 +16,7 @@ ARG LG_GITHUB='https://github.com/jesseduffield/lazygit/releases/download/v0.40.
 ARG LG_ARCHIVE='lazygit.tar.gz'
 
 # Update repositories and install software for building Neovim from source.
-RUN apt-get update && apt-get -y install git wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip procps
+RUN apt-get update && apt-get -y install git git-lfs wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip procps
 
 # Configure locale
 RUN apt-get install -y locales && \
@@ -58,6 +58,9 @@ COPY ./home/ /root/
 
 # Create directory for projects (there should be mounted from host).
 RUN mkdir -p /root/workspace
+
+# Avoid dubious ownership in git
+RUN git config --global --add safe.directory /root/workspace
 
 # Set default location after container startup.
 WORKDIR /root/workspace

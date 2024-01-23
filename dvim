@@ -48,6 +48,7 @@ CMD="docker run --rm -it \
     --net=host -e DISPLAY=$DISPLAY \
     --volumes-from $main_container_name \
     -v $path:/root/workspace \
+    -v $HOME/.ssh:/root/.ssh \
     --workdir /root/workspace \
     $image_name nvim$nvim_path"
 $CMD
