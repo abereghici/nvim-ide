@@ -47,7 +47,7 @@ fi
 CMD="docker run --rm -it \
     --net=host -e DISPLAY=$DISPLAY \
     --volumes-from $main_container_name \
-    -v $path:/mnt/volume \
-    --workdir /mnt/volume \
+    -v $path:/root/workspace \
+    --workdir /root/workspace \
     $image_name nvim$nvim_path"
 $CMD
