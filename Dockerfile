@@ -16,7 +16,7 @@ ARG LG_GITHUB='https://github.com/jesseduffield/lazygit/releases/download/v0.40.
 ARG LG_ARCHIVE='lazygit.tar.gz'
 
 # Update repositories and install software for building Neovim from source.
-RUN apt-get update && apt-get -y install git wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip
+RUN apt-get update && apt-get -y install git wget curl ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config zip unzip doxygen tzdata python3 python3-pip procps
 
 # Configure locale
 RUN apt-get install -y locales && \
