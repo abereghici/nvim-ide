@@ -1,0 +1,9 @@
+#/!/bin/bash
+
+DOCKER_IMAGE="nvim-ide"
+DOCKER_CONTAINER="nvim-ide-main"
+
+BIN_DIR="$HOME/.local/bin"
+RESOURCE_DIR="$HOME/.local/share/nvim-ide"
+NVIM_CONFIG_DIR="$HOME/.config/nvim"
+

@@ -1,16 +1,16 @@
 #/!/bin/bash
 
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-resource_dir="$HOME/.local/share/nvim-ide"
-bin_dir="$HOME/.local/bin"
+source ./config
 
 # Cleanup the resource folder
-rm -rf $resource_dir
-mkdir $resource_dir
+rm -rf $RESOURCE_DIR
+mkdir $RESOURCE_DIR
 
 # Copy local resources
-cp -R $script_dir/home $resource_dir/home
-cp -R $script_dir/Dockerfile $resource_dir/
+cp -R ./home $RESOURCE_DIR
+cp -R ./Dockerfile $RESOURCE_DIR
+cp -R ./config $RESOURCE_DIR
 
 # Add dvim command to the bin folder
-cp -R $script_dir/dvim $bin_dir/
+[ -d $BIN_DIR ] || mkdir $BIN_DIR
+cp -R ./dvim $BIN_DIR/

@@ -1,0 +1,10 @@
+#/!/bin/bash
+
+source ./config
+
+rm -rf $BIN_DIR
+rm -rf $RESOURCE_DIR
+
+docker container stop $DOCKER_CONTAINER || true
+docker container rm $DOCKER_CONTAINER || true
+docker image rm $DOCKER_IMAGE || true

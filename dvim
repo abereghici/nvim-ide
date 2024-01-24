@@ -1,54 +1,51 @@
 #!/bin/bash
 
-image_name="nvim-ide"
-main_container_name="nvim-ide-main"
-resource_dir="$HOME/.local/share/nvim-ide"
-neovim_config_dir="$HOME/.config/nvim"
+source ./config
 
-real=""
-path=""
-nvim_path=""
+REAL=""
+CURRENT_PATH=""
+NVIM_PATH=""
 
 if [ ! -z "$1" ]; then
-	real="$(realpath $1)"
+	REAL="$(realpath $1)"
 else
-	real="$(realpath .)"
+	REAL="$(realpath .)"
 fi
 
-if [ -d "$real" ]; then
+if [ -d "$REAL" ]; then
 	if [ -z "$1" ]; then
-		nvim_path=""
+		NVIM_PATH=""
 	else
-		nvim_path=" ."
+		NVIM_PATH=" ."
 	fi
-	path="$real"
+	CURRENT_PATH="$REAL"
 else
-	nvim_path=" $(basename $real)"
-	path="$(dirname $real)"
+	NVIM_PATH=" $(basename $REAL)"
+	CURRENT_PATH="$(dirname $REAL)"
 fi
 
-if [ -z "$(docker images -q $image_name)" ]; then
+if [ -z "$(docker images -q $DOCKER_IMAGE)" ]; then
 	echo "Image does not exist. Building now..."
-	CMD="docker build -t $image_name $resource_dir"
+	CMD="docker build -t $DOCKER_IMAGE $RESOURCE_DIR"
 	$CMD
 fi
 
-if [ ! "$(docker ps -aq -f name=$main_container_name)" ]; then
+if [ ! "$(docker ps -aq -f name=$DOCKER_CONTAINER)" ]; then
 	echo "Container does not exist. Creating now..."
 	CMD="docker run -d \
-        --name $main_container_name \
-        -v $neovim_config_dir:/root/.config/nvim \
+        --name $DOCKER_CONTAINER \
+        -v $NVIM_CONFIG_DIR:/root/.config/nvim \
         -v nvim_state:/root/.local/state/nvim \
         -v nvim_share:/root/.local/share/nvim \
         -v $HOME/.ssh:/root/.ssh \
-        $image_name"
+        $DOCKER_IMAGE"
 	$CMD
 fi
 
 CMD="docker run --rm -it \
     --net=host -e DISPLAY=$DISPLAY \
-    --volumes-from $main_container_name \
-    -v $path:/root/workspace \
+    --volumes-from $DOCKER_CONTAINER \
+    -v $CURRENT_PATH:/root/workspace \
     --workdir /root/workspace \
-    $image_name nvim$nvim_path"
+    $DOCKER_IMAGE nvim$NVIM_PATH"
 $CMD
