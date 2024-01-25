@@ -2,6 +2,9 @@
 
 source ./config
 
+export HOST_UID=$(id -u)
+export HOST_GID=$(id -g)
+
 REAL=""
 CURRENT_PATH=""
 NVIM_PATH=""
@@ -26,7 +29,7 @@ fi
 
 if [ -z "$(docker images -q $DOCKER_IMAGE)" ]; then
 	echo "Image does not exist. Building now..."
-	CMD="docker build -t $DOCKER_IMAGE $RESOURCE_DIR"
+	CMD="docker build --build-arg UID=$HOST_UID --build-arg GID=$HOST_GID -t $DOCKER_IMAGE $RESOURCE_DIR"
 	$CMD
 fi
 
@@ -34,10 +37,10 @@ if [ ! "$(docker ps -aq -f name=$DOCKER_CONTAINER)" ]; then
 	echo "Container does not exist. Creating now..."
 	CMD="docker run -d \
         --name $DOCKER_CONTAINER \
-        -v $NVIM_CONFIG_DIR:/root/.config/nvim \
-        -v nvim_state:/root/.local/state/nvim \
-        -v nvim_share:/root/.local/share/nvim \
-        -v $HOME/.ssh:/root/.ssh \
+        -v nvim_state:/home/nonroot/.local/state/nvim \
+        -v nvim_share:/home/nonroot/.local/share/nvim \
+        -v $NVIM_CONFIG_DIR:/home/nonroot/.config/nvim \
+        -v $HOME/.ssh:/home/nonroot/.ssh \
         $DOCKER_IMAGE"
 	$CMD
 fi
@@ -45,7 +48,6 @@ fi
 CMD="docker run --rm -it \
     --net=host -e DISPLAY=$DISPLAY \
     --volumes-from $DOCKER_CONTAINER \
-    -v $CURRENT_PATH:/root/workspace \
-    --workdir /root/workspace \
+    -v $CURRENT_PATH:/home/nonroot/workspace \
     $DOCKER_IMAGE nvim$NVIM_PATH"
 $CMD
