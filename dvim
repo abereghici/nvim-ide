@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source ./config
+RESOURCE_DIR="$HOME/.local/share/nvim-ide"
+
+source $RESOURCE_DIR/config
 
 export HOST_UID=$(id -u)
 export HOST_GID=$(id -g)
