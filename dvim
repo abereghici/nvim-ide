@@ -51,5 +51,6 @@ CMD="docker run --rm -it \
     --net=host -e DISPLAY=$DISPLAY \
     --volumes-from $DOCKER_CONTAINER \
     -v $CURRENT_PATH:/home/nonroot/workspace \
+    --workdir /home/nonroot/workspace \
     $DOCKER_IMAGE nvim$NVIM_PATH"
 $CMD
