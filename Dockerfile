@@ -68,6 +68,7 @@ COPY ./home/ ~/
 
 # Create directory for projects (there should be mounted from host).
 RUN mkdir -p ~/workspace
+RUN mkdir -p ~/.config/nvim
 RUN mkdir -p ~/.local/share/nvim
 RUN mkdir -p ~/.local/state/nvim
 
